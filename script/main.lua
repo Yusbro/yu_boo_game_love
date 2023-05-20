@@ -17,22 +17,47 @@ Yu = {
 Player = {
 	x = 468,
 	y = 703,
+	is_on_ship = false,
 
 	Render = function(self)
-		spr(20, 15, 6)
+		if self.is_on_ship == false then
+			spr(20, 15, 6)
+		end
 	end,
 	--updaing the player code!!!
 	Update = function(self)
-		self.Move(self)
+		local dx, dy = self.Move(self)
+		self.HopInShip(self,dx, dy)
 	end,
-	
+
+	--hop on in some ship!!!
+	HopInShip = function(self, dx, dy)
+		local index = get_map(self.x + dx * 2, self.y + dy * 2)
+		print(index)
+		if index == 79 then
+			self.is_on_ship = true
+			self.x = self.x + dx * 2
+			self.y = self.y + dy * 2
+		end
+	end,
+
+
 
 	--is collide
 	Is_Collide = function(self, x, y, px, py)
 		local index = get_map(x+px, y+py)
-		print(index)
-		if index==18 or index==37 then return false end
-		return true
+
+		local non_collideable_tiles = {18, 37}
+
+		local is_collide = true
+		for _index, value in ipairs(non_collideable_tiles) do
+			if index == value then
+				is_collide = false
+				break
+			end
+		end
+
+		return is_collide
 	end,
 
 	--the move code!!!
@@ -50,7 +75,16 @@ Player = {
 			self.x = self.x + dx
 			self.y = self.y + dy
 		end
+		return dx, dy
 	end
+}
+
+
+--Mine ship!!!
+Ship = {
+
+
+
 }
 
 
